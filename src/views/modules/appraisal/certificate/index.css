@@ -1,0 +1,228 @@
+
+*{
+    padding: 0;
+    margin: 0;
+}
+.flex_box{
+    display: flex;
+    display: -webkit-flex;
+}
+.flex_item{
+    flex:1;
+    -webkit-flex:1;
+}
+.certificate_box{
+    position: relative;
+    width: 1200px;
+    margin: 30px auto;
+}
+.certificate_box::after{
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 336px;
+    height: 427px;
+    background: url('../../../../assets/image/wy_bg.png') no-repeat;
+    background-size: 100% 100%;
+}
+.certificate_box .certificate_item{
+    margin: 0 15px;
+}
+.certificate_box .item_header{
+    font-size: 14px;
+    color: #000204;
+    padding: 5px 0;
+    border-bottom: 8px solid #94612F;
+}
+.certificate_box .item_header h3.title{
+    font-weight: 500;
+}
+.certificate_box .item_header .intro{
+    font-weight: 500;
+    line-height: 1.5;
+    font-size: 13px;
+}
+.certificate_info{
+    margin-top: 40px;
+}
+.info_item{
+    position: relative;
+    padding-bottom: 14px;
+}
+.info_item::before,
+.info_item::after{
+    content:"";
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+.info_item::before{
+    bottom: 6px;
+    height: 0.5px;
+    background: #ccc;
+}
+.info_item::after{
+    bottom: 0;
+    height: 2px;
+    background: #764D1F;
+}
+.line{
+    margin: 30px 0 12px;
+    width: 100%;
+    height: 0.5px;
+    background: #ccc;
+}
+.sub_item{
+    margin: 14px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    align-items: center;
+}
+.sub_item .sub_title{
+    font-size: 14px;
+}
+.sub_item .sub_intro,
+.show_analysis .intro,
+.show_attention .intro{
+    font-size: 12px;
+    transform-origin:top left;
+    -webkit-transform-origin:top left;
+    transform: scale(0.8);
+    -webkit-transform: scale(0.8);
+}
+.sub_item .sub_value{
+    text-align: right;
+    font-size: 14px;
+}
+.item_code{
+    margin: 10px 0;
+}
+.item_code .code{
+    height: 50px;
+}
+.item_code .code_number{
+    font-size: 15px;
+    font-weight: 600;
+}
+.picture_big{
+    padding: 10px;
+    border: 1px solid #764D1F;
+    box-sizing: border-box;
+}
+.picture_big .show_big{
+    width: 360px;
+    height: 350px;
+}
+.small_box{
+    margin-top: 15px;
+}
+.small_box .small_item{
+    padding: 6px;
+    border: 1px solid #764D1F;
+    box-sizing: border-box;
+}
+.small_box .show_small{
+    width: 100%;
+    height: 172px;
+}
+.small_box .small_item:nth-child(2){
+    margin: 0 10px;
+}
+.company{
+    margin-top: 20px;
+    font-size: 15px;
+    color: #94612F;
+    text-align: center;
+}
+.show_analysis,
+.show_attention{
+    margin-top: 30px;
+}
+.show_analysis .info_item{
+    margin: 20px 0;
+}
+.show_star{
+    margin-left: 6px;
+    width: 28px;
+    height: 28px;
+    vertical-align: middle;
+}
+.analysis_box{
+    width: 410px;
+}
+.show_analysis .flex_box{
+    align-items: center;
+}
+.attention_box{
+    margin: 20px 0 0;
+    flex-wrap: wrap;
+}
+.attention_item{
+    margin: 10px 0 0;
+    padding-right: 10px;
+    width: 50%;
+    box-sizing: border-box;
+}
+.attention_item .remark{
+    align-items: center;
+    font-size: 14px;
+}
+.attention_item .attention_side{
+    position: relative;
+    margin-left: 16px;
+    width: 100px;
+}
+.attention_item .attention_side::before{
+    content:'';
+    position: absolute;
+    left: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 100%;
+    border: 1px solid #94612F;
+}
+.attention_item .attention_side.selected::after{
+    content:'';
+    position: absolute;
+    left: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 100%;
+    background: #94612F;
+}
+.remark_content{
+    font-size: 13px;
+    color: #333;
+    font-weight: 600;
+}
+.tip{
+    font-size: 14px;
+    color: #333;
+    margin-top: 20px;
+}
+.description{
+    position: relative;
+    margin: 20px 0;
+    font-size: 14px;
+    height: 74px;
+    color: #333;
+    font-weight: 600;
+    line-height: 36px;
+    border-bottom: 1px solid #999;
+}
+.description::before{
+    content:'';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 36px;
+    height: 1px;
+    background: #999;
+}
