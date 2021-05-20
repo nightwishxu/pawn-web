@@ -78,7 +78,7 @@ export default {
           {required: true, message: '尺寸不能为空', trigger: 'blur'}
         ],
         weight: [
-          { required: true, validator: valiNumberPass1, trigger: "blur" }
+          { required: true, message: '重量不能为空', trigger: "blur" }
         ],
         mainMaterial: [
           { required: true, message: '主材质不能为空', trigger: "blur" }

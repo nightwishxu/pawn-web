@@ -1,12 +1,29 @@
 <template>
   <el-dialog title="生成证书" :close-on-click-modal="false" :visible.sync="visible" @close="closed">
     <el-form ref="dataForm" :model="form" label-width="100px" :rules="dataRule">
-      <el-form-item label="选择图片">
-        <el-checkbox-group v-model="form.checkImages" :max="max">
-          <el-checkbox v-for="(item, index) in allImage" :key="index" :label="item">
-            <el-image style="width: 100px; height: 100px" :src="showURL + item"></el-image>
-          </el-checkbox>
-        </el-checkbox-group>
+      <el-form-item label="上传图片">
+        <el-upload
+          :multiple="false"
+          :file-list="fileList"
+          :show-file-list="true"
+          class="editor-slide-upload"
+          :action="actionURL"
+          list-type="picture-card"
+          :on-success="handleSuccess"
+          :on-remove="handleRemove"
+        >
+          <el-button
+            size="small"
+            type="primary"
+          >
+            选择 图片
+          </el-button>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="鉴定类型" prop="classify">
+        <el-select v-model="form.classify" style="width: 512px">
+          <el-option v-for="item in typeList" :key="item.code" :value="item.code" :label="item.name"/>
+        </el-select>
       </el-form-item>
       <el-form-item label="名称" prop="name">
         <el-input v-model="form.name"></el-input>
@@ -96,16 +113,23 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">{{ $t('m.cancel') }}</el-button>
-      <el-button type="primary" @click="dataFormSubmit(2)" v-if="form.twoCertificateCode == '' || form.twoCertificateCode == null" >生成证书</el-button>
-<!--      <el-button type="primary" @click="dataFormSubmit(2)" v-if="form.twoCertificateCode != '' && form.twoCertificateCode != null" >重新生成二折页</el-button>-->
-<!--      <el-button type="primary" @click="dataFormSubmit(3)" v-if="form.certificateCode == '' || form.certificateCode == null">生成三折页</el-button>-->
-<!--      <el-button type="primary" @click="dataFormSubmit(3)" v-if="form.certificateCode != '' && form.certificateCode != null">重新生成三折页</el-button>-->
+      <el-button type="primary" @click="dataFormSubmit(2)"
+                 v-if="form.twoCertificateCode == '' || form.twoCertificateCode == null">生成证书</el-button>
+      <!--      <el-button type="primary" @click="dataFormSubmit(2)" v-if="form.twoCertificateCode != '' && form.twoCertificateCode != null" >重新生成二折页</el-button>-->
+      <!--      <el-button type="primary" @click="dataFormSubmit(3)" v-if="form.certificateCode == '' || form.certificateCode == null">生成三折页</el-button>-->
+      <!--      <el-button type="primary" @click="dataFormSubmit(3)" v-if="form.certificateCode != '' && form.certificateCode != null">重新生成三折页</el-button>-->
     </span>
   </el-dialog>
 </template>
 
 <script>
 export default {
+  props: {
+    sup: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     var valiNumberPass1 = (rule, value, callback) => {
       // 包含小数的数字
@@ -130,12 +154,30 @@ export default {
       }
     };
     return {
+      fileList: [],
+      fileIds: [],
+      actionURL: '',
+      typeList: [
+        { code: '01', name: '钻石' },
+        { code: '02', name: '彩色宝石' },
+        { code: '03', name: '手表' },
+        { code: '04', name: '奢侈品珠宝饰品' },
+        { code: '05', name: '翡翠及饰品' },
+        { code: '06', name: '和田玉及饰品' },
+        { code: '07', name: '贵金属及贵金属饰品' },
+        { code: '08', name: '瓷器' },
+        { code: '09', name: '书法' },
+        { code: '10', name: '绘画' },
+        { code: '11', name: '文玩杂项' },
+        { code: '12', name: '其他物品' }
+      ],
       max: 4,
       visible: false,
       showURL: '',
       appraisalId: null,
       allImage: [],
       form: {
+        classify: '',
         appraisalId: '',
         checkImages: [],
         isDampproof: '1',
@@ -172,68 +214,45 @@ export default {
         mainMaterial: [{required: true, message: '主材质不能为空', trigger: 'blur'}],
         subMaterial: [{required: true, message: '副材质不能为空', trigger: 'blur'}],
         years: [{required: true, message: '年份不能为空', trigger: 'blur'}],
-        other: [{required: true, message: '年份不能为空', trigger: 'blur'}],
+        other: [{required: true, message: '其他不能为空', trigger: 'blur'}],
         marketLiquidity: [{required: true, validator: valiNumberPass2, trigger: 'blur'}],
         valueStability: [{required: true, validator: valiNumberPass2, trigger: 'blur'}],
         materialVulnerability: [{required: true, validator: valiNumberPass2, trigger: 'blur'}],
-        pawnPrice: [{required: true, validator: valiNumberPass1, trigger: 'blur'}]
+        pawnPrice: [{required: true, validator: valiNumberPass1, trigger: 'blur'}],
+        classify: [{required: true, message: '鉴定类型不能为空', trigger: 'blur'}]
       }
     };
   },
+  created() {
+    this.actionURL = window.SITE_CONFIG.baseUrl + '/sys/file/upload'
+  },
   methods: {
-    init(id) {
-      this.visible = true;
-      this.form.appraisalId = id;
-      this.showURL = window.SITE_CONFIG.baseUrl + '/sys/file/show/';
-      let _this = this;
-      this.$http({
-        url: this.$http.adornUrl('/appraisal/photo'),
-        method: 'get',
-        params: this.$http.adornParams({appraisalId: id})
-      }).then(({data}) => {
-        if (data && data.code === 0) {
-          for (let photo of data.data) {
-            _this.allImage.push(photo.id);
-          }
+    handleSuccess(response, file) {
+      this.fileIds.push(file.response.file_id)
+      console.log(this.fileIds)
+    },
+    handleRemove(file) {
+      const fileIds = []
+      this.fileIds.forEach(f => {
+        if (f !== file.response.file_id) {
+          fileIds.push(f)
         }
-      });
-      this.$http({
-        url: this.$http.adornUrl('/appraisal/detail'),
-        method: 'get',
-        params: this.$http.adornParams({
-          id: id
-        })
-      }).then(({data}) => {
-        if (data && data.code === 0) {
-          console.log("123", data)
-          _this.form.name = data.data.name;
-          _this.form.size = data.data.size;
-          _this.form.weight = data.data.weight;
-          _this.form.mainMaterial = data.data.mainMaterial;
-          _this.form.subMaterial = data.data.subMaterial;
-          _this.form.years = data.data.years;
-          _this.form.other = data.data.other;
-          _this.form.marketLiquidity = data.data.marketLiquidity;
-          _this.form.valueStability = data.data.valueStability;
-          _this.form.materialVulnerability = data.data.materialVulnerability;
-          _this.form.pawnPrice = data.data.pawnPrice;
-          _this.form.twoCertificateCode = data.data.twoCertificateCode;
-          _this.form.certificateCode = data.data.certificateCode;
-        }
-      });
+      })
+      this.fileIds = fileIds
+      console.log(this.fileIds)
     },
     dataFormSubmit(createType) {
       let _this = this;
-      this.form.images = this.form.checkImages.join(',');
+      this.form.images = this.fileIds.join(',');
       this.form.createType = createType;
       this.$http({
-        url: this.$http.adornUrl('/appraisal/certificate/create'),
+        url: this.$http.adornUrl('/appraisal/certificate/createNew'),
         method: 'get',
         params: this.$http.adornParams(this.form)
       }).then(({data}) => {
         if (data && data.code === 0) {
           _this.visible = false;
-          _this.$emit('refreshDataList');
+          _this.sup.getList()
         } else {
           this.$message.error('生成证书失败，请确认证书模板文件是否存在！');
         }
@@ -242,6 +261,7 @@ export default {
     closed() {
       this.allImage = [];
       this.form = {
+        classify: '',
         appraisalId: '',
         checkImages: [],
         isDampproof: '1',

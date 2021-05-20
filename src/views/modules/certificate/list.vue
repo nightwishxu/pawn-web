@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div style="margin-bottom: 20px">
+      <create-zs ref="createZs" :sup="supThis"/>
+      <el-button @click="$refs.createZs.visible = true">添加证书</el-button>
+    </div>
     <el-table :data="dataList" border stripe v-loading="dataListLoading"
               style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
@@ -101,12 +105,14 @@
 <script>
 import CertificateRecordList from './record/list'
 import FinancialRecordList from './finance/list'
+import createZs from './create-zs'
 
 export default {
-  components: {CertificateRecordList, FinancialRecordList},
+  components: {CertificateRecordList, FinancialRecordList, createZs},
   data() {
     return {
       pageSize: 10,
+      supThis: this,
       pageIndex: 1,
       queryParams: {
         page: 1,
