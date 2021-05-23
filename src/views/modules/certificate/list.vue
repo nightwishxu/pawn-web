@@ -74,6 +74,18 @@
                      v-if="scope.row.threeZFileId != '' &&  scope.row.threeZFileId != null"
                      @click="viewPdf('Z3' + scope.row.threeZFileId,scope.row.code)">查看三折页正面
           </el-button>
+          <el-button size="mini" type="text"
+                     v-if="scope.row.twoFFileId != '' &&  scope.row.twoFFileId != null"
+                     @click="viewPdf('F2' + scope.row.twoFFileId,scope.row.code)">查看二折页反面
+          </el-button>
+          <el-button size="mini" type="text"
+                     v-if="scope.row.threeFFileId != '' &&  scope.row.threeFFileId != null"
+                     @click="viewPdf('F3' + scope.row.threeFFileId,scope.row.code)">查看三折页反面
+          </el-button>
+          <el-button size="mini" type="text"
+                     v-if="(scope.row.threeZFileId != '' &&  scope.row.threeZFileId != null ) || (scope.row.twoZFileId != '' &&  scope.row.twoZFileId != null )"
+                     @click="zipDownLoad(scope.row)">打包下载
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -161,6 +173,23 @@ export default {
       }
       // this.$refs.recordListRef.initHandler();
       this.certificateRecordOpen = true;
+    },
+    zipDownLoad(row) {
+      window.open(this.$http.adornUrl(`/sys/file/certificate/downLoadZip/${row.id}`));
+      // this.$http({
+      //   url: this.$http.adornUrl('/sys/file/certificate/downLoadZip/' + row.id),
+      //   method: 'get',
+      //   responseType: "blob"
+      // }).then(({response}) => {
+      //   let blob = new Blob([response.data], { type: "application/zip" });
+      //   let url = window.URL.createObjectURL(blob);
+      //   const link = document.createElement("a"); // 创建a标签
+      //   link.href = url;
+      //   link.download = row.name + ".zip"; // 重命名文件
+      //   link.click();
+      //   URL.revokeObjectURL(url); // 释放内存
+      //   this.checkList = []
+      // })
     },
     getList() {
       this.dataListLoading = true;

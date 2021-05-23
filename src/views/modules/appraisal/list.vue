@@ -84,6 +84,14 @@
           >
             生成证书
           </el-button>
+          <el-button
+            type="text"
+            v-if="scope.row.state === '2' && scope.row.method == '6' && (scope.row.certificate_code != '' && scope.row.certificate_code != null) && scope.row.threePdfState != 4"
+            size="small"
+            @click="reCreateZs(scope.row.id)"
+          >
+            重新生成证书
+          </el-button>
 
           <!--          v-if="scope.row.state === '2' && (scope.row.certificate_code != '' && scope.row.certificate_code != null)"-->
           <!--          <el-button-->
@@ -364,6 +372,22 @@ export default {
       this.zsVisible = true
       this.$nextTick(() => {
         this.$refs.createZs.init(id)
+      })
+    },
+    reCreateZs(id) {
+      let _this = this;
+      this.$http({
+        url: this.$http.adornUrl('/appraisal/certificate/reCreateZs'),
+        method: 'get',
+        params: this.$http.adornParams({
+          id: id
+        })
+      }).then(({data}) => {
+        if (data && data.code === 0) {
+          _this.getDataList()
+        } else {
+          _this.$message.error('生成证书失败，请确认证书模板文件是否存在！');
+        }
       })
     },
     viewResult(id) {
