@@ -218,7 +218,7 @@ export default {
         marketLiquidity: [{required: true, validator: valiNumberPass2, trigger: 'blur'}],
         valueStability: [{required: true, validator: valiNumberPass2, trigger: 'blur'}],
         materialVulnerability: [{required: true, validator: valiNumberPass2, trigger: 'blur'}],
-        pawnPrice: [{required: true, validator: valiNumberPass1, trigger: 'blur'}],
+        pawnPrice: [{required: true, message: '典当价格不能为空', trigger: 'blur'}],
         classify: [{required: true, message: '鉴定类型不能为空', trigger: 'blur'}]
       }
     };
